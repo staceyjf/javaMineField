@@ -58,12 +58,10 @@ Board class
 Square[][] boardElements;
 boardSize = 10
 amountOfBombs = board size
-movesRequiredToWin = boardSize squared - amountofbombs
 
-public Board(int boardSize, int amountOfBombs) {
+public Board(int boardSize) {
     this.boardSize = boardSize;
     this.amountOfBombs = amountOfBombs;
-    this.movesRequiredToWin = boardSize * boardSize - amonntOfBombs;
     this.boardElements = new Square[boardSize][boardSize]; //could be arraylist
 
     // need to work out a way to populate the baordElement will - array seems the easist?

@@ -20,7 +20,8 @@ public class Game {
         createNewPlayer();
 
         // menu logic
-        this.messaging = " Please make your selection \n\n =========Main Menu==========";
+        this.messaging = " please make your selection \n\n =========Main Menu==========";
+        System.out.println();
         System.out.println(this.player.getPlayerName() + this.messaging);
 
         // loop over enum values to get index eg .ordinal() & message
@@ -33,10 +34,11 @@ public class Game {
 
     // to create a new Board instance
     public void createNewBoard() {
-        this.board = new Board();
-        this.messaging = " ========= Main Menu========== \n\n are you ready to face the challenge.";
+        this.messaging = "\n========= Main Menu========== \nAre you ready to face the challenge. \n\nChoose a board size (max 15)";
         System.out.println("\n" + this.player.getPlayerName() + this.messaging);
-
+        int userChoiceSizing = scanner.nextInt();
+        this.board = new Board(userChoiceSizing);
+        this.board.printBoard();
     }
 
     public void createNewPlayer() {
