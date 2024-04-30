@@ -1,7 +1,8 @@
 public enum MAIN_MENU {
     NEW_GAME("Play a new game"),
     PLAYER_STATS("Display game statistics"),
-    NEW_PLAYER("New Player");
+    NEW_PLAYER("New Player"),
+    EXIT("Exit");
 
     private String menuMessage;
 

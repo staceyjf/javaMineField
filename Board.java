@@ -30,7 +30,7 @@ public class Board {
         System.out.print("  ");
         Arrays.asList(this.board)
                 .stream() // need to map inside
-                .map((row) -> Arrays.stream(row).map((square) -> "x ").collect(Collectors.joining(" ")))
+                .map((row) -> Arrays.stream(row).map((square) -> " x ").collect(Collectors.joining(" ")))
                 .forEach((str) -> System.out.println(str));
     }
 

@@ -11,14 +11,22 @@ public class Game {
         this.scanner = new Scanner(System.in);
     }
 
-    // to start the main menu
+    // to startGame
     public void startGame() {
-        this.messaging = "======== welcome to Javafield ======= \n";
-        System.out.println(messaging);
+        createNewPlayer(); // create a new player instance
+        handleMenuLogic(); // print menu & handle menuLogic
+    }
 
-        // create new player
-        createNewPlayer();
+    // to end game
+    public void endGame() {
+        scanner.close(); // close the scanner - don't need to update the instance variable
+        this.messaging = "Thanks for playing - Goodbye";
+        System.out.println();
+        System.out.println(this.messaging);
+    }
 
+    // to start the main menu
+    public void handleMenuLogic() {
         // menu logic
         this.messaging = " please make your selection \n\n =========Main Menu==========";
         System.out.println();
@@ -28,8 +36,10 @@ public class Game {
         for (MAIN_MENU item : MAIN_MENU.values()) {
             System.out.printf("%d) %s \n", item.ordinal() + 1, item.getMenuMessage());
         }
+
         int menuChoice = scanner.nextInt();
-        menu(menuChoice);
+        scanner.nextLine();
+        menuLogic(menuChoice);
     }
 
     // to create a new Board instance
@@ -41,7 +51,9 @@ public class Game {
         this.board.printBoard();
     }
 
+    // create a new Player instance
     public void createNewPlayer() {
+        System.out.println();
         this.messaging = "Please enter your player name: ";
         System.out.println(this.messaging);
         String playerName = scanner.nextLine();
@@ -49,7 +61,16 @@ public class Game {
         this.player = new Player(playerName);
     }
 
-    public void menu(int userMenuChoice) {
+    // to updated the player name
+    public void updateNewPlayer() {
+        createNewPlayer();
+        this.messaging = " - all updated";
+        System.out.println("\n" + this.player.getPlayerName() + this.messaging);
+        handleMenuLogic();
+    }
+
+    // handle user's menu choice
+    public void menuLogic(int userMenuChoice) {
         // get the right index of the menu choice and convert to name
         // ENUM MainM
         MAIN_MENU choice = MAIN_MENU.values()[userMenuChoice - 1];
@@ -57,7 +78,8 @@ public class Game {
             case NEW_GAME -> createNewBoard();
             case PLAYER_STATS -> {
                 /* function to print scores */}
-            case NEW_PLAYER -> createNewPlayer();
+            case NEW_PLAYER -> updateNewPlayer();
+            case EXIT -> endGame();
         }
     }
 }
