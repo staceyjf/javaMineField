@@ -79,8 +79,8 @@ Square class
 boolean hasBeenPlayed
 boolean hasBomb
 
-construcor (hasBomb)
-this.hasbomb = hasbomb
+construcor ()
+this.hasbomb = false
 this.hasbeenplayed = false
 
 1. (get) returns hasBeenPlayed

@@ -1,42 +1,107 @@
-import java.util.Arrays;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Board {
     private Square[][] board;
     private int boardSize;
-    private int amountOfBomb;
+    private int amountOfBombsLeft;
+    private Scanner scanner;
 
-    public Board(int boardSize) {
+    public Board(int boardSize, Scanner scanner) {
         this.boardSize = boardSize;
-        // bombs = same number as one side of the board
-        this.amountOfBomb = this.boardSize;
-        this.board = new Square[this.boardSize][this.boardSize];
+        this.amountOfBombsLeft = 0;
+        this.scanner = scanner;
+        this.board = new Square[this.boardSize][this.boardSize]; // create the array
+
+        // populate it with Squares
+        for (int i = 0; i < this.boardSize; i++) {
+            for (int j = 0; j < this.boardSize; j++) {
+                this.board[i][j] = new Square();
+            }
+        }
     }
 
-    public void printBoard() {
-        System.out.println();
-        System.out.println("====================== MY BOARD =============================");
+    public void boardLogic() {
+        // set the bombs
+        setBombs();
 
-        // print the header
-        System.out.print("  ");
-        int i;
-        for (i = 97; i <= 97 + boardSize - 1; i++) {
+        // print welcome message and board
+        System.out.println();
+        System.out.println("================== MY BOARD ==================");
+
+        // board
+        System.out.print("   ");
+        for (int i = 97; i <= 97 + boardSize - 1; i++) {
             System.out.printf("%c  ", (char) i); // cast number to char
         }
-
-        // print the board
         System.out.println();
-        System.out.print("  ");
-        Arrays.asList(this.board)
-                .stream() // need to map inside
-                .map((row) -> Arrays.stream(row).map((square) -> " x ").collect(Collectors.joining(" ")))
-                .forEach((str) -> System.out.println(str));
+        for (int i = 0; i < this.board.length; i++) {
+            System.out.print((i + 1) + "  ");
+            for (int j = 0; j < this.board[i].length; j++) {
+                if (!this.board[i][j].getPlayState()) {
+                    if (j <= 10) {
+                        System.out.print("x ");
+                    } else {
+                        System.out.print("x   ");
+                    }
+                } else {
+                    if (j <= 10) {
+                        System.out.print("  ");
+                    } else {
+                        System.out.print("    ");
+                    }
+                }
+
+            }
+            System.out.println(); // print each row on a line new
+        }
+        System.out.println("\nEnter your co-ordinates: \n");
+        // co-ords
+        int coords = this.scanner.nextInt();
+        scanner.nextLine();
+        checkCoord(coords);
     }
 
-    // getter
-    // don't combine getter & setters to adhere to encapsulation. Control the scope
-    // of the function
-    // (bind the data and the function)
+    //
+    public void checkCoord(int coords) {
+
+    }
+
+    // set the bombs
+    public void setBombs() {
+        int amountOfBombsSet = 0;
+        int amountToSet = boardSize;
+
+        while (amountOfBombsSet != amountToSet) {
+            // set up random number generator
+            Random random = new Random();
+            int random_row = random.nextInt(board.length);
+            int random_col = random.nextInt(board.length);
+            // if the square does not have a bomb
+            if (!board[random_row][random_col].getBombState()) {
+                // set it as a bomb
+                board[random_row][random_col].setBombState(true);
+                // increase bomb count
+                amountOfBombsSet++;
+            }
+        }
+    }
+
+    // get bomb count
+    // to be used in Board stats
+    public int bombCount() {
+        this.amountOfBombsLeft = 0;
+        // outter array
+        for (int i = 0; i < board.length; i++) {
+            // inner loop
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j].getBombState()) {
+                    // incr bombCount
+                    this.amountOfBombsLeft++;
+                }
+            }
+        }
+        return this.amountOfBombsLeft;
+    }
 
 }

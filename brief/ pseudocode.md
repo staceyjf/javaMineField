@@ -46,8 +46,8 @@ nameX are you ready to face the challenge. XYZ,..........
 Enter your first co-ordindate:  a2
 
 To note
-* Row: string
-* Column: int
+* Row: char to cast to int (outer)
+* Column: int (inner)
 
 ----- Game Loop--------
 9. Ask for player's coordinates
