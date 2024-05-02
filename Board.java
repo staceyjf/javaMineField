@@ -13,7 +13,7 @@ public class Board {
     private int boardSize;
     private int amountOfBombs;
     private int amountOfBombsLeft;
-    private int numberOfMoves;
+    private int numberOfMovesToWin;
     private Scanner scanner;
     private GAME_STATE gameState; // controls the game state to update Game
 
@@ -21,7 +21,7 @@ public class Board {
         this.boardSize = boardSize; // user defined
         this.amountOfBombs = amountOfBombs; // user define
         this.amountOfBombsLeft = 0;
-        this.numberOfMoves = 0;
+        this.numberOfMovesToWin = ((this.boardSize * this.boardSize) - this.amountOfBombs);
         this.scanner = scanner;
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
         this.displayBoard = new String[boardSize][boardSize];
@@ -132,18 +132,15 @@ public class Board {
         }
 
         // check to see if they have won
-        if () {
+        if (numberOfMovesToWin == 0) {
             this.gameState = GAME_STATE.WON;
         }
-
 
         // if unplayed
         if (logicBoard[y_coord][x_coord] == 0) {
             this.logicBoard[y_coord][x_coord] = 1; // updated to play
             this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
-
-
-
+            numberOfMovesToWin--; // reduce the number of moves left
 
             // check for surrounding bombs
         }
@@ -157,8 +154,9 @@ public class Board {
 
     }
 
-    public boolean isGameOver() {
-        return this.isGameOver;
+    // setter to update game
+    public GAME_STATE getGameState() {
+        return this.gameState;
     }
 
     public void printDisplayBoard() {

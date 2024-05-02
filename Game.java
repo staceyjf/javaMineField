@@ -18,10 +18,24 @@ public class Game {
 
     // to endGame
     public void endGame() {
+        System.out.println(player.toString()); // print player stats
+        System.out.println();
+        System.out.println("Keen to play again? - y/n ");
+        String userChoice = scanner.nextLine();
+
+        // present the menu
+        if (userChoice.toLowerCase().equals("y")) {
+            handleMenuLogic();
+        } else {
+            exitGame();
+        }
+    }
+
+    public void exitGame() {
         scanner.close(); // close the scanner - don't need to update the instance variable
-        System.out.println(player.toString());
         System.out.println();
         System.out.println("Thanks for playing - Goodbye");
+        System.exit(0);
     }
 
     // to create a new Board instance & start the game play
@@ -64,7 +78,6 @@ public class Game {
             scanner.nextLine();
             menuLogic(menuChoice);
         }
-        endGame();
 
         if (this.board.getGameState() == GAME_STATE.WON) {
             player.incrGamesWon();
@@ -73,6 +86,8 @@ public class Game {
         if (this.board.getGameState() == GAME_STATE.LOST) {
             player.getGamesLost();
         }
+
+        endGame();
     }
 
     // handle user's menu choice
@@ -89,7 +104,7 @@ public class Game {
                 System.out.println("\n" + this.player.getPlayerName() + " - all updated");
                 handleMenuLogic();
             }
-            case EXIT -> endGame();
+            case EXIT -> exitGame();
         }
     };
 
