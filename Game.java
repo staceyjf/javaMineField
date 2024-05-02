@@ -4,7 +4,6 @@ public class Game {
     private Player player;
     private Board board;
     private Scanner scanner;
-    private String messaging;
 
     // initialize the scanner here and pass it to needed classes
     public Game() {
@@ -20,8 +19,7 @@ public class Game {
     // create a new Player instance
     public void createNewPlayer() {
         System.out.println();
-        this.messaging = "Please enter your player name: ";
-        System.out.println(this.messaging);
+        System.out.println("Please enter your player name: ");
         String playerName = scanner.nextLine();
         // TODO: add some new player logic here
         this.player = new Player(playerName);
@@ -30,9 +28,9 @@ public class Game {
     // to start the main menu
     public void handleMenuLogic() {
         // menu logic
-        this.messaging = " please make your selection \n\n =========Main Menu==========";
         System.out.println();
-        System.out.println(this.player.getPlayerName() + this.messaging);
+        System.out
+                .println(this.player.getPlayerName() + " please make your selection \n\n =========Main Menu==========");
 
         // loop over enum values to get index eg .ordinal() & message
         for (MAIN_MENU item : MAIN_MENU.values()) {
@@ -55,30 +53,31 @@ public class Game {
             case NEW_PLAYER -> {
                 createNewPlayer();
                 // extra messaging for updating
-                this.messaging = " - all updated";
-                System.out.println("\n" + this.player.getPlayerName() + this.messaging);
+                System.out.println("\n" + this.player.getPlayerName() + " - all updated");
                 handleMenuLogic();
             }
             case EXIT -> {
                 scanner.close(); // close the scanner - don't need to update the instance variable
-                this.messaging = "Thanks for playing - Goodbye";
                 System.out.println();
-                System.out.println(this.messaging);
+                System.out.println("Thanks for playing - Goodbye");
             }
         }
     };
 
     // to create a new Board instance & start the game play
     public void createNewBoard() {
-        this.messaging = " are you ready to face the challenge. \n\nChoose a board size (max 15)";
-        System.out.println("\n========= Main Menu ==========\n" + this.player.getPlayerName() + this.messaging);
+        System.out.println("\n========= Main Menu ==========\n" + this.player.getPlayerName()
+                + " are you ready to face the challenge. \n\nChoose a board size (suggested amount: 10):");
         int userChoiceSizing = scanner.nextInt();
-        this.board = new Board(userChoiceSizing, this.scanner); // pass the scanner to use it in board)
+        scanner.nextLine();
+        System.out.println("\nChoose the amount of bombs to set (suggested amount: 10):");
+        int userBombAmount = scanner.nextInt();
+        scanner.nextLine();
+        this.board = new Board(userChoiceSizing, userBombAmount, this.scanner); // pass the scanner to use it in board)
         this.board.boardLogic();
     }
 
     public void printPlayerScores() {
-        this.messaging = "Print something here TODO";
-        System.out.println(this.messaging);
+        System.out.println("Print something here TODO");
     }
 };
