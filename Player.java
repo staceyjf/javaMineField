@@ -12,9 +12,11 @@ public class Player {
     // toString Override
     @Override
     public String toString() {
-        return this.playerName + ": you have played: " + (this.gamesWon + this.gamesLost) + "\n" + "won: "
-                + this.gamesWon
-                + "/n" + "lost: " + this.gamesLost;
+        return this.playerName
+                + ": you have played: "
+                + (this.gamesWon + this.gamesLost)
+                + "\n" + "won: " + this.gamesWon
+                + "\n" + "lost: " + this.gamesLost;
     }
 
     // getters

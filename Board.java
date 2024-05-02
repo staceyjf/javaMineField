@@ -1,6 +1,8 @@
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 
 // ENUM
 // 0 is unplayed / "\uD83C\uDF54"; // hamburger emoji
@@ -11,23 +13,25 @@ public class Board {
     private int[][] logicBoard;
     private String[][] displayBoard;
     private int boardSize;
-    private int amountOfBombs;
+    private int totalBombs;
+    private int totalSurroundingBombs;
     private int numberOfMovesToWin;
     private Scanner scanner;
     private GAME_STATE gameState; // controls the game state to update Game
 
-    public Board(int boardSize, int amountOfBombs, Scanner scanner) {
+    public Board(int boardSize, int totalBombs, Scanner scanner) {
         this.boardSize = boardSize; // user defined
-        this.amountOfBombs = amountOfBombs; // user define
-        this.numberOfMovesToWin = ((this.boardSize * this.boardSize) - this.amountOfBombs);
+        this.totalBombs = totalBombs; // user defined
+        this.totalBombs = 0;
+        this.numberOfMovesToWin = ((boardSize * boardSize) - totalBombs);
         this.scanner = scanner;
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
         this.displayBoard = new String[boardSize][boardSize];
         this.gameState = GAME_STATE.IN_PROGRESS;
 
         // initialise board with unplayed squares
-        for (int i = 0; i < displayBoard.length; i++) {
-            for (int j = 0; j < displayBoard[i].length; j++) {
+        for (int i = 0; i < this.displayBoard.length; i++) {
+            for (int j = 0; j < this.displayBoard[i].length; j++) {
                 this.displayBoard[i][j] = SQUARE.UNPLAYED.getDisplayValue();
             }
         }
@@ -39,7 +43,7 @@ public class Board {
         Random random = new Random();
 
         // plant the bombs
-        while (amountOfBombsSet != amountOfBombs) {
+        while (amountOfBombsSet != totalBombs) {
             int random_row = random.nextInt(logicBoard.length);
             int random_col = random.nextInt(logicBoard.length);
             // if the square does not have a bomb
@@ -52,10 +56,7 @@ public class Board {
         }
 
         printDisplayBoard(); // prints the board
-
-        // make this a loop until valid co-ords are entered
-        System.out.println(); // print each row on a line new
-        System.out.println("\nEnter your co-ordinates (eg a1): \n");
+        System.out.println("\nEnter your co-ordinates (eg a1):");
 
         // co-ords
 
@@ -117,47 +118,46 @@ public class Board {
             }
         }
 
-        // if a bomb - end game
-        if (logicBoard[y_coord][x_coord] == 9) {
-            this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
-            System.out.println("You hit a bomb");
-            // how would i update the player's stats if connected board
-            this.gameState = GAME_STATE.LOST;
-        }
-
-        // check to see if they have won and if so end game
+        // check to see if game is won
         if (numberOfMovesToWin == 0) {
             this.gameState = GAME_STATE.WON;
         }
 
-        // if unplayed
-        if (logicBoard[y_coord][x_coord] == 0) {
-            this.logicBoard[y_coord][x_coord] = 1; // updated to play
-            this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
-            numberOfMovesToWin--; // reduce the number of moves left
+        // check to see if game is lost or sqaure is unplayed
+        switch (logicBoard[y_coord][x_coord]) {
+            case 9: // if a bomb - end game
+                this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
+                System.out.println("You hit a bomb");
+                // how would i update the player's stats if connected board
+                this.gameState = GAME_STATE.LOST;
+                break;
+            case 0: // if unplayed
+                this.logicBoard[y_coord][x_coord] = 1; // updated to play
+                this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
+                numberOfMovesToWin--; // reduce the number of moves left
 
-            // check for surrounding bombs
-            // print new board
-            // list of tranformations
-            // (2, 1)
-            // -> (x, y) -> (dx, dy)
-            // -> (1, 0) -> (-1, -1)
-            // -> (2, 0) -> ( 0, -1)
-            // -> (3, 0) -> ( 1, -1)
-            // -> (1, 1) -> (-1, 0)
-            // -> (3, 1) -> ( 1, 0)
-            // -> (1, 2) -> (-1, 1)
-            // -> (2, 2) -> ( 0, 1)
-            // -> (3, 2) -> ( 1, 1)
+                // all the positions to check
+                List<int[]> transformations = Arrays.asList(
+                        new int[] { -1, -1 },
+                        new int[] { -1, 0 },
+                        new int[] { -1, 1 },
+                        new int[] { 0, -1 },
+                        new int[] { 0, 1 },
+                        new int[] { 1, -1 },
+                        new int[] { 1, 0 },
+                        new int[] { 1, 1 });
 
-            // (0,0)
-            // for (transformations) {
-            // try {
-            // // (-1, -1)
-            // } catch (e) {
-            // continue;
-            // }
-            // }
+                for (int[] transformation : transformations) {
+                    int newY = y_coord + transformation[0];
+                    int newX = x_coord + transformation[1];
+
+                    /// ensure co-ords are valid
+                    if (newY >= 0 && newY < logicBoard.length && newX >= 0 && newX < logicBoard[0].length) {
+                        if (this.logicBoard[newY][newX] == 9) {
+                            totalSurroundingBombs++; // increase bomb count for surrounding bombs
+                        }
+                    }
+                }
         }
 
     }
@@ -173,11 +173,12 @@ public class Board {
         System.out.println("================== GAME STATS ================");
         System.out.printf("Moves to win: %d", numberOfMovesToWin);
         System.out.println();
-        System.out.println("================== MY BOARD ==================");
+        System.out.println();
+        System.out.println("================== MY BOARD ==================\n");
 
         // board
         // letter header
-        System.out.print("   ");
+        System.out.print("  ");
         for (int i = 97; i <= 97 + boardSize - 1; i++) {
             System.out.printf("%3c", (char) i); // print the letter columns
         }
