@@ -12,7 +12,6 @@ public class Board {
     private String[][] displayBoard;
     private int boardSize;
     private int amountOfBombs;
-    private int amountOfBombsLeft;
     private int numberOfMovesToWin;
     private Scanner scanner;
     private GAME_STATE gameState; // controls the game state to update Game
@@ -20,7 +19,6 @@ public class Board {
     public Board(int boardSize, int amountOfBombs, Scanner scanner) {
         this.boardSize = boardSize; // user defined
         this.amountOfBombs = amountOfBombs; // user define
-        this.amountOfBombsLeft = 0;
         this.numberOfMovesToWin = ((this.boardSize * this.boardSize) - this.amountOfBombs);
         this.scanner = scanner;
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
@@ -54,11 +52,7 @@ public class Board {
         }
 
         printDisplayBoard(); // prints the board
-        handleCoord(); // handles user co-ords inputs
-    }
 
-    //
-    public void handleCoord() {
         // make this a loop until valid co-ords are entered
         System.out.println(); // print each row on a line new
         System.out.println("\nEnter your co-ordinates (eg a1): \n");
@@ -123,7 +117,7 @@ public class Board {
             }
         }
 
-        // if a bomb
+        // if a bomb - end game
         if (logicBoard[y_coord][x_coord] == 9) {
             this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
             System.out.println("You hit a bomb");
@@ -131,7 +125,7 @@ public class Board {
             this.gameState = GAME_STATE.LOST;
         }
 
-        // check to see if they have won
+        // check to see if they have won and if so end game
         if (numberOfMovesToWin == 0) {
             this.gameState = GAME_STATE.WON;
         }
@@ -143,14 +137,28 @@ public class Board {
             numberOfMovesToWin--; // reduce the number of moves left
 
             // check for surrounding bombs
+            // print new board
+            // list of tranformations
+            // (2, 1)
+            // -> (x, y) -> (dx, dy)
+            // -> (1, 0) -> (-1, -1)
+            // -> (2, 0) -> ( 0, -1)
+            // -> (3, 0) -> ( 1, -1)
+            // -> (1, 1) -> (-1, 0)
+            // -> (3, 1) -> ( 1, 0)
+            // -> (1, 2) -> (-1, 1)
+            // -> (2, 2) -> ( 0, 1)
+            // -> (3, 2) -> ( 1, 1)
+
+            // (0,0)
+            // for (transformations) {
+            // try {
+            // // (-1, -1)
+            // } catch (e) {
+            // continue;
+            // }
+            // }
         }
-
-        // if logicBoard[row][column] != 9 && logicBoard[row][column] != 1 ->
-        // update displayboard
-        // find bombs nearby -
-        // update number of moves++
-
-        // call print
 
     }
 
@@ -161,6 +169,9 @@ public class Board {
 
     public void printDisplayBoard() {
         // print welcome message and board
+        System.out.println();
+        System.out.println("================== GAME STATS ================");
+        System.out.printf("Moves to win: %d", numberOfMovesToWin);
         System.out.println();
         System.out.println("================== MY BOARD ==================");
 
@@ -181,67 +192,4 @@ public class Board {
             System.out.println();
         }
     }
-
-    // get bomb count
-    // to be used in Board stats
-    public int bombCount() {
-        this.amountOfBombsLeft = 0;
-        // outter array
-        for (int i = 0; i < logicBoard.length; i++) {
-            // inner loop
-            for (int j = 0; j < logicBoard[i].length; j++) {
-                if (logicBoard[i][j] == 9) { // 9 is our bomb
-                    // incr bombCount
-                    this.amountOfBombsLeft++;
-                }
-            }
-        }
-        return this.amountOfBombsLeft;
-    }
-
 }
-
-//
-// Board
-// -Underlying data (int)
-// [0,1,9,1,0][0,1,1,1,0]
-// -Displayed data (string)
-// ['0','1',' ',' ',' ']['0','1','1',' ',' ']
-
-// ->
-
-// user input
-// (1, 1)
-// (2, 1)
-// (0, 0)
-
-// if (displayedData[1][1] != ' ') {
-// throw new Error("You have already inputed these coords")
-// }
-
-// if the cell hasn't been played updated the underlyingData
-// displayedData[1][1] = underlyingData[1][1]
-
-// [0, 0, 9, 0, 0]
-// [0, 9, 2, 0, 0]
-
-// list of tranformations
-// (2, 1)
-// -> (x, y) -> (dx, dy)
-// -> (1, 0) -> (-1, -1)
-// -> (2, 0) -> ( 0, -1)
-// -> (3, 0) -> ( 1, -1)
-// -> (1, 1) -> (-1, 0)
-// -> (3, 1) -> ( 1, 0)
-// -> (1, 2) -> (-1, 1)
-// -> (2, 2) -> ( 0, 1)
-// -> (3, 2) -> ( 1, 1)
-
-// (0,0)
-// for (transformations) {
-// try {
-// // (-1, -1)
-// } catch (e) {
-// continue;
-// }
-// }
