@@ -1,4 +1,4 @@
-import java.nio.charset.StandardCharsets;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,6 +15,7 @@ public class Board {
     private int amountOfBombsLeft;
     private int numberOfMoves;
     private Scanner scanner;
+    private GAME_STATE gameState; // controls the game state to update Game
 
     public Board(int boardSize, int amountOfBombs, Scanner scanner) {
         this.boardSize = boardSize; // user defined
@@ -24,8 +25,9 @@ public class Board {
         this.scanner = scanner;
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
         this.displayBoard = new String[boardSize][boardSize];
+        this.gameState = GAME_STATE.IN_PROGRESS;
 
-        // initialise board with ENUM unplayed
+        // initialise board with unplayed squares
         for (int i = 0; i < displayBoard.length; i++) {
             for (int j = 0; j < displayBoard[i].length; j++) {
                 this.displayBoard[i][j] = SQUARE.UNPLAYED.getDisplayValue();
@@ -62,12 +64,14 @@ public class Board {
         System.out.println("\nEnter your co-ordinates (eg a1): \n");
 
         // co-ords
-        String userCoords = this.scanner.nextLine();
+
         int y_coord = 0;
         int x_coord = 0;
 
         // check until valid co-ords
         while (true) {
+            String userCoords = this.scanner.nextLine(); // ask for new input each time
+
             try {
                 // if empty
                 if (userCoords.isEmpty()) {
@@ -87,13 +91,12 @@ public class Board {
 
                 // if not the right type for x
                 try {
-                    Integer.parseInt(rowString);
+                    Integer.parseInt(rowString); // will throw an exception if it can't convert
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Oops - please try again as the x co-ordinate was not a number");
                 }
 
-                y_coord = columnChar - 'a';
-                // subtract "1 the value of a (the unicode value) to get the right index
+                y_coord = columnChar - 'a'; // subtract "1 the value of a (the unicode value) to get the right index
                 x_coord = Integer.parseInt(rowString) - 1; // to get the right index
 
                 // if not inside the board
@@ -103,6 +106,11 @@ public class Board {
                             "Oops - please try again as the co-ordinates where outside of the board range");
                 }
 
+                // if played eg 1
+                if (logicBoard[y_coord][x_coord] == 1) {
+                    throw new SquareAlreadyPlayedException("Oops - that square has already been played");
+                }
+
                 break; // to exit out when co-ords are valid
             } catch (NumberFormatException ex) {
                 System.out.println("Invalid co-ordinate - please input a co-ord like 'a1'");
@@ -110,49 +118,47 @@ public class Board {
                 System.out.println("Invalid co-ordinate - please input a co-ord within the board range");
             } catch (IllegalArgumentException ex) {
                 System.out.println(ex.getMessage());
+            } catch (SquareAlreadyPlayedException ex) {
+                System.out.println(ex.getMessage());
             }
         }
 
-        System.out.println(y_coord);
-        System.out.println(x_coord);
+        // if a bomb
+        if (logicBoard[y_coord][x_coord] == 9) {
+            this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
+            System.out.println("You hit a bomb");
+            // how would i update the player's stats if connected board
+            this.gameState = GAME_STATE.LOST;
+        }
 
-        // check logicbaord
-        // if logicBoard[row][column] == 9 -> you lose
-        // updatedate displaybaord
+        // check to see if they have won
+        if () {
+            this.gameState = GAME_STATE.WON;
+        }
 
-        // checkWin
-        // endgame etc
+
+        // if unplayed
+        if (logicBoard[y_coord][x_coord] == 0) {
+            this.logicBoard[y_coord][x_coord] = 1; // updated to play
+            this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
+
+
+
+
+            // check for surrounding bombs
+        }
 
         // if logicBoard[row][column] != 9 && logicBoard[row][column] != 1 ->
         // update displayboard
         // find bombs nearby -
         // update number of moves++
-        // update current square to bombs nearby for display
-        // emoji number U+0030 U+20E3
+
         // call print
 
-        // restart
-        // display board
-        // call handleCoord
     }
 
-    // update displayBoard
-    public void updateDisplayBoard() {
-        for (int i = 0; i < this.displayBoard.length; i++) {
-            for (int j = 0; j < this.displayBoard[i].length; j++) {
-                switch (logicBoard[i][j]) {
-                    case 9:
-                        this.displayBoard[i][j] = SQUARE.BOMB.getDisplayValue();
-                        break;
-                    case 1:
-                        this.displayBoard[i][j] = SQUARE.PLAYED.getDisplayValue();
-                        break;
-                    case 0:
-                        this.displayBoard[i][j] = SQUARE.UNPLAYED.getDisplayValue();
-                        break;
-                }
-            }
-        }
+    public boolean isGameOver() {
+        return this.isGameOver;
     }
 
     public void printDisplayBoard() {
@@ -164,14 +170,14 @@ public class Board {
         // letter header
         System.out.print("   ");
         for (int i = 97; i <= 97 + boardSize - 1; i++) {
-            System.out.printf("%2c", (char) i); // print the letter columns
+            System.out.printf("%3c", (char) i); // print the letter columns
         }
         System.out.println();
         for (int i = 0; i < this.displayBoard.length; i++) {
             // number column
             System.out.printf("%3d", (i + 1));
             for (int j = 0; j < this.displayBoard[i].length; j++) {
-                // sqaures
+                // squares
                 System.out.printf("%2s", this.displayBoard[i][j]);
             }
             System.out.println();
@@ -194,6 +200,7 @@ public class Board {
         }
         return this.amountOfBombsLeft;
     }
+
 }
 
 //
