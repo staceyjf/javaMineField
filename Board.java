@@ -22,7 +22,7 @@ public class Board {
     public Board(int boardSize, int totalBombs, Scanner scanner) {
         this.boardSize = boardSize; // user defined
         this.totalBombs = totalBombs; // user defined
-        this.totalBombs = 0;
+        this.totalSurroundingBombs = 0;
         this.numberOfMovesToWin = ((boardSize * boardSize) - totalBombs);
         this.scanner = scanner;
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
@@ -56,43 +56,56 @@ public class Board {
         }
 
         printDisplayBoard(); // prints the board
+
+        // continually ask for new squares until game is either won or lost
+        while (this.gameState == GAME_STATE.IN_PROGRESS) {
+            int[] validCoords = checkCoords();
+            handleGamePlay(validCoords);
+            // print board
+            printDisplayBoard();
+        }
+    }
+
+    public int[] checkCoords() {
         System.out.println("\nEnter your co-ordinates (eg a1):");
 
         // co-ords
-
-        int y_coord = 0;
-        int x_coord = 0;
+        int y_coord = 0; // row
+        int x_coord = 0; // column
 
         // check until valid co-ords
         while (true) {
             String userCoords = this.scanner.nextLine(); // ask for new input each time
 
+            // remove any whitespace and lower case
+            String updatedCords = userCoords.replaceAll(" ", "").toLowerCase();
+
             try {
                 // if empty
-                if (userCoords.isEmpty()) {
+                if (updatedCords.isEmpty()) {
                     throw new IllegalArgumentException("Oops - please try again and enter co-ordinates");
                 }
 
                 // transform "a1" -> split into y,x
                 // column = letter -> to int - 1 (inner) -> y coords
                 // row = int -> -1 for index (outter ) -> x coords
-                char columnChar = userCoords.charAt(0); // 'a'
-                String rowString = userCoords.substring(1); // '1'
+                char rowChar = updatedCords.charAt(0); // 'a'
+                String columnString = updatedCords.substring(1); // '1'
 
                 // if not right type for y
-                if (!Character.isLetter(columnChar)) {
+                if (!Character.isLetter(rowChar)) {
                     throw new IllegalArgumentException("Oops - please try again as the y co-ordinate was not a letter");
                 }
 
                 // if not the right type for x
                 try {
-                    Integer.parseInt(rowString); // will throw an exception if it can't convert
+                    Integer.parseInt(columnString); // will throw an exception if it can't convert
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Oops - please try again as the x co-ordinate was not a number");
                 }
 
-                y_coord = columnChar - 'a'; // subtract "1 the value of a (the unicode value) to get the right index
-                x_coord = Integer.parseInt(rowString) - 1; // to get the right index
+                y_coord = rowChar - 'a'; // subtract "1 the value of a (the unicode value) to get the right index
+                x_coord = Integer.parseInt(columnString) - 1; // to get the right index
 
                 // if not inside the board
                 if (x_coord < 0 || x_coord >= boardSize || y_coord < 0
@@ -118,12 +131,15 @@ public class Board {
             }
         }
 
-        // check to see if game is won
-        if (numberOfMovesToWin == 0) {
-            this.gameState = GAME_STATE.WON;
-        }
+        // return validate co-ordiates
+        return new int[] { y_coord, x_coord };
+    }
 
-        // check to see if game is lost or sqaure is unplayed
+    public void handleGamePlay(int[] validCoords) {
+        int y_coord = validCoords[0];
+        int x_coord = validCoords[1];
+
+        // check to see if game is lost or square is unplayed
         switch (logicBoard[y_coord][x_coord]) {
             case 9: // if a bomb - end game
                 this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
@@ -134,7 +150,8 @@ public class Board {
             case 0: // if unplayed
                 this.logicBoard[y_coord][x_coord] = 1; // updated to play
                 this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
-                numberOfMovesToWin--; // reduce the number of moves left
+                this.numberOfMovesToWin--; // reduce the number of moves left
+                this.totalSurroundingBombs = 0; // reset surrounding bombs count to zero
 
                 // all the positions to check
                 List<int[]> transformations = Arrays.asList(
@@ -147,9 +164,10 @@ public class Board {
                         new int[] { 1, 0 },
                         new int[] { 1, 1 });
 
+                // surrounding bombs
                 for (int[] transformation : transformations) {
-                    int newY = y_coord + transformation[0];
                     int newX = x_coord + transformation[1];
+                    int newY = y_coord + transformation[0];
 
                     /// ensure co-ords are valid
                     if (newY >= 0 && newY < logicBoard.length && newX >= 0 && newX < logicBoard[0].length) {
@@ -158,8 +176,14 @@ public class Board {
                         }
                     }
                 }
-        }
 
+                System.out.println(Arrays.deepToString(logicBoard));
+
+                // check to see if game is won
+                if (numberOfMovesToWin == 0) {
+                    this.gameState = GAME_STATE.WON;
+                }
+        }
     }
 
     // setter to update game
@@ -179,17 +203,23 @@ public class Board {
         // board
         // letter header
         System.out.print("  ");
-        for (int i = 97; i <= 97 + boardSize - 1; i++) {
-            System.out.printf("%3c", (char) i); // print the letter columns
+        for (int i = 1; i <= boardSize; i++) {
+            System.out.printf("%4d", i); // print the number columns
         }
         System.out.println();
         for (int i = 0; i < this.displayBoard.length; i++) {
-            // number column
-            System.out.printf("%3d", (i + 1));
+            // letter column
+            System.out.printf("%4c", (char) (i + 97));
             for (int j = 0; j < this.displayBoard[i].length; j++) {
                 // squares
                 System.out.printf("%2s", this.displayBoard[i][j]);
             }
+            System.out.println();
+        }
+
+        if (totalSurroundingBombs > 0) {
+            System.out.println();
+            System.out.printf("There are %d bombs in the surrounding area.", numberOfMovesToWin);
             System.out.println();
         }
     }

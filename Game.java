@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Game {
@@ -49,12 +50,36 @@ public class Game {
     // to create a new Board instance & start the game play
     public void createNewBoard() {
         System.out.println("\n========= Main Menu ==========\n" + this.player.getPlayerName()
-                + " are you ready to face the challenge. \n\nChoose a board size (suggested amount: 10):");
-        int userChoiceSizing = scanner.nextInt();
-        scanner.nextLine();
+                + " are you ready to face the challenge. \n\nChoose a board size (min 5 - max 26):");
+
+        int userChoiceSizing = 0; // run the loop at least once
+
+        // limit board size
+        while (userChoiceSizing < 5 || userChoiceSizing > 26) {
+            try {
+                userChoiceSizing = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException error) {
+                System.out.println("Board grids need to be between 5 to 26:");
+                scanner.nextLine(); // move this past the error
+            }
+        }
+
         System.out.println("\nChoose the amount of bombs to set (suggested amount: 10):");
-        int userBombAmount = scanner.nextInt();
-        scanner.nextLine();
+        int userBombAmount = 0;
+
+        // validate userBombAmount
+        while (userBombAmount <= 0 || userBombAmount == userChoiceSizing) {
+            try {
+                userBombAmount = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException error) {
+                System.out.println(
+                        "Number of bombs need to be greater than zero but less than the number of square in the board - please try again:");
+                scanner.nextLine(); // move this past the error
+            }
+        }
+
         this.board = new Board(userChoiceSizing, userBombAmount, this.scanner); // pass the scanner to use it in board)
         this.board.boardLogic();
     }
