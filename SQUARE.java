@@ -1,7 +1,7 @@
 public enum SQUARE {
     UNPLAYED("\u2B1B"), // unplayed
     PLAYED("\u2B1C"), // played
-    BOMB("\uD83D\uDCA3"); // bomb
+    BOMB("x"); // bomb
 
     private String displayValue; // to store the display
 

@@ -1,73 +1,54 @@
-# Welcome to Java Minefield, a classic game of mindSweeper powered by Java and played in the CLI
+# Welcome to Java Minefield
 
-<!-- # Welcome to theMarketPlace
+Welcome to Java Minefield, a classic Minesweeper game powered by Java and played in the command-line interface (CLI).
 
-theMarketPlace is a React front-end backed by FireBase e-commerce application..
+![Homepage Screenshot](./brief/gameplay.png)
 
-
-<div align="center">
-  <img src="./brief/homepage.png" alt="Homepage Screenshot" width="700">
-</div>
-
-<br>
-
-Explore it at: [portfolio.staceyfanner.com/theMarketPlace/](http://portfolio.staceyfanner.com/theMarketPlace/)
+[![Video of game play](http://img.youtube.com/vi/CY8k5uvTEas/0.jpg)](https://youtu.be/CY8k5uvTEas)
 
 ## About
 
-theMarketPlace is a React front-end e-commerce application designed to provide users with an immersive shopping experience for luxury fashion items. Leveraging React and FireBase, it offers a seamless interface for browsing products.
+Java Minefield is my first Java project, providing valuable insights into type safety and the advantages of using Java.
 
-## Planning Artifacts
+## To play
 
-1. Figma board: [board](https://www.figma.com/file/it0HP8sbGr3JPLmASUos2s/theMarketPlace---ecom?type=design&node-id=1-2&mode=design&t=P6UBNRnVQDfHI7Jo-0)
+1. Clone this repo
+2. Navigate into the cloned rep directory on your local machine
+3. Run via `java Main` in the CLI
+* please note you need to have JDK installed on your local machine in order for this game to work
 
-<div align="center">
-  <img src="./brief/responsive-design.png" alt="Screenshot of my Figma design board" width="300">
-</div>
+## Key Features
 
-<br>
-
-## Key Features:
-
-1. **Product Carousel:** Provides an interactive way to create awareness for new products while increasing user engagement and time spent on site.
-2. **Category Page:** Display a grid of products populated via FireBase.
-3. **Product Page:** Provides additional details of a selected product including the ability to add as a favorite and add to cart.
+1. **User Customization**: Players can choose the board grid size and number of bombs.
+2. **Interactive Menu**: Players can navigate options like changing their player name, viewing statistics, and starting a new game.
 
 ## Key Learning Highlights
 
-1. **useReducer**: Exploring this as an alternative to useState given I had several methods which affected state.
-2. **useContext**: Helped me streamline the way data is passed down through the component tree.
-3. **Seeding data via dummyJson API**: Working with the admin SDK for FireBase to populate my db with products.
+1. **Object-Oriented Programming (OOP)**: Designed with classes to uphold OOP principles like encapsulation and abstraction.
+2. **Java Fundamentals**: Solid grasp of Java basics to develop a robust and interactive game.
 
-<!-- 
 ## Challenges
 
-1. **Dialog element**: Issues with rendering and understanding that adding a display property to the dialog itself would negate the close() method which meant that the dialog effectively would not "close".
-2. **CSS Positioning**: Working across Grid and Flexbox to get the best of each.
-3. **Responsive Design**: Trying to manage how the app would be experienced across a range of device sizes - using Polypane to guide my choices to help shape a responsive experience.  -->
+1. **Type Safety**: Understanding and leveraging Java's type system effectively.
+2. **Dynamic Bomb Count Updates (thbc)**: Implementing dynamic updates to surrounding bomb counts using a vector approach.
 
 ## To-Dos
 
-1. **Cart Page**: Implement UX and logic to complete the Cart functionality 
+1. **Player Stat Storage**: Implement player stats storage using JSON files.
+2. **GUI for Gameplay**: Develop a front-end web-based application to enhance the game beyond the CLI.
 
 ## Screenshots
 
-| Home Page                                | Product Page                     |
-| ---------------------------------------- | ------------------------------- |
-| ![Homepage](./brief/homepage.png) | ![Product Page](./brief/product.png) |
+| Menu Page                                 | Product Page                           |
+| ----------------------------------------- | -------------------------------------- |
+| <img src="./brief/menu.png" width="400" height="200">  | <img src="./brief/play.png" width="400"  height="200"> |
 
 ## Technologies Used
 
 <div align="center">
 
-![React](https://img.shields.io/badge/-React-05122A?style=flat&logo=react)
-![Firebase](https://img.shields.io/badge/-Firebase-05122A?style=flat&logo=firebase)
-![Figma](https://img.shields.io/badge/-Figma-05122A?style=flat&logo=figma)
-![HTML5](https://img.shields.io/badge/-HTML5-05122A?style=flat&logo=html5)
-![CSS3](https://img.shields.io/badge/-CSS3-05122A?style=flat&logo=css3)
-![Sass](https://img.shields.io/badge/-Sass-05122A?style=flat&logo=sass)
-![JavaScript](https://img.shields.io/badge/-JavaScript-05122A?style=flat&logo=javascript)
+![Java](https://img.shields.io/badge/-Java-05122A?style=flat&logo=java)
 ![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git)
 ![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github)
 
-</div> -->
+</div>

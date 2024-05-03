@@ -12,7 +12,7 @@ public class Player {
     // toString Override
     @Override
     public String toString() {
-        return this.playerName
+        return "\n" + this.playerName
                 + " you have "
                 + "\n" + "PLAYED: " + (this.gamesWon + this.gamesLost)
                 + "\n" + "WON: " + this.gamesWon

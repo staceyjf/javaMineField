@@ -62,7 +62,9 @@ public class Board {
             int[] validCoords = checkCoords();
             handleGamePlay(validCoords);
             // print board
-            printDisplayBoard();
+            if (this.gameState != GAME_STATE.LOST) {
+                printDisplayBoard();
+            }
         }
     }
 
@@ -176,8 +178,6 @@ public class Board {
                         }
                     }
                 }
-
-                System.out.println(Arrays.deepToString(logicBoard));
 
                 // check to see if game is won
                 if (numberOfMovesToWin == 0) {
