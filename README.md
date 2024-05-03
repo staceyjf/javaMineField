@@ -2,7 +2,7 @@
 
 Welcome to Java Minefield, a classic Minesweeper game powered by Java and played in the command-line interface (CLI).
 
-![Homepage Screenshot](./brief/gameplay.png width="500" height="300")
+<img src="./brief/gameplay.png" alt="Homepage Screenshot" width="500" height="300">
 
 Video of game play if you don't fancy don't looking
 [![Video of game play](http://img.youtube.com/vi/CY8k5uvTEas/0.jpg)](https://youtu.be/CY8k5uvTEas)
@@ -28,11 +28,11 @@ Video of game play if you don't fancy don't looking
 ## Challenges
 
 1. **Type Safety**: Understanding and leveraging Java's type system effectively.
-2. **Dynamic Bomb Count Updates (thbc)**: Implementing dynamic updates to surrounding bomb counts using a vector approach.
+2. **Dynamic Bomb Count Updates**: Implementing dynamic updates to surrounding bomb counts using a vector approach.
 
 ## To-Dos
 
-1. **Player Stat Storage**: Implement player stats storage using JSON files.
+1. **Player Statistics Storage**: Implement player stats storage using JSON files.
 2. **GUI for Gameplay**: Develop a front-end web-based application to enhance the game beyond the CLI.
 
 ## Screenshots
