@@ -100,7 +100,7 @@ public class Board {
                 // if not the right type for x
                 try {
                     Integer.parseInt(columnString); // will throw an exception if it can't convert
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException error) {
                     throw new IllegalArgumentException("Oops - please try again as the x co-ordinate was not a number");
                 }
 
@@ -201,10 +201,14 @@ public class Board {
         System.out.println("================== MY BOARD ==================\n");
 
         // board
-        // letter header
-        System.out.print("  ");
+        // number header
+        System.out.print("   ");
         for (int i = 1; i <= boardSize; i++) {
-            System.out.printf("%4d", i); // print the number columns
+            if (i < 10) {
+                System.out.print("  " + i); // print the number columns with an extra space for single-digit numbers
+            } else {
+                System.out.print(" " + i); // print the number columns
+            }
         }
         System.out.println();
         for (int i = 0; i < this.displayBoard.length; i++) {
@@ -219,7 +223,7 @@ public class Board {
 
         if (totalSurroundingBombs > 0) {
             System.out.println();
-            System.out.printf("There are %d bombs in the surrounding area.", numberOfMovesToWin);
+            System.out.printf("There are %d bombs in the surrounding area.", totalSurroundingBombs);
             System.out.println();
         }
     }

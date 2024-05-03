@@ -13,10 +13,10 @@ public class Player {
     @Override
     public String toString() {
         return this.playerName
-                + ": you have played: "
-                + (this.gamesWon + this.gamesLost)
-                + "\n" + "won: " + this.gamesWon
-                + "\n" + "lost: " + this.gamesLost;
+                + " you have "
+                + "\n" + "PLAYED: " + (this.gamesWon + this.gamesLost)
+                + "\n" + "WON: " + this.gamesWon
+                + "\n" + "LOST: " + this.gamesLost;
     }
 
     // getters

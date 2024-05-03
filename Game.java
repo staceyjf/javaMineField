@@ -32,6 +32,7 @@ public class Game {
 
     public void handleGameStats() {
         // check if they have played any games
+        System.out.println();
         if ((this.player.getGamesLost() + this.player.getGamesWon()) == 0) {
             System.out.println("\n You haven't played any games yet!");
         } else {
@@ -50,36 +51,52 @@ public class Game {
     // to create a new Board instance & start the game play
     public void createNewBoard() {
         System.out.println("\n========= Main Menu ==========\n" + this.player.getPlayerName()
-                + " are you ready to face the challenge. \n\nChoose a board size (min 5 - max 26):");
+                + " are you ready to face the challenge. \n");
 
         int userChoiceSizing = 0; // run the loop at least once
 
         // limit board size
         while (userChoiceSizing < 5 || userChoiceSizing > 26) {
             try {
+                System.out.println("Choose a board size (min 5 - max 26): ");
                 userChoiceSizing = scanner.nextInt();
-                scanner.nextLine();
+                if (userChoiceSizing < 5 || userChoiceSizing > 26) {
+                    throw new UserErrorException("Please enter a number between 5 to 26.");
+                }
+                break;
             } catch (InputMismatchException error) {
-                System.out.println("Board grids need to be between 5 to 26:");
+                System.out.println("Please only use numbers to create a board.");
+                scanner.nextLine(); // move this past the error
+            } catch (UserErrorException error) {
+                System.out.println(error.getMessage()); // use the built in getter
                 scanner.nextLine(); // move this past the error
             }
         }
 
-        System.out.println("\nChoose the amount of bombs to set (suggested amount: 10):");
         int userBombAmount = 0;
 
         // validate userBombAmount
-        while (userBombAmount <= 0 || userBombAmount == userChoiceSizing) {
+        while (userBombAmount <= 0 || userBombAmount >= (userChoiceSizing * userChoiceSizing)) {
             try {
+                System.out.println("\nChoose the amount of bombs to set (suggested amount: 10):");
                 userBombAmount = scanner.nextInt();
-                scanner.nextLine();
+                if (userBombAmount <= 0 || userBombAmount >= (userChoiceSizing * userChoiceSizing)) {
+                    throw new UserErrorException(
+                            "Please enter a number greater than 0 and less than the size of the board grid.");
+                }
+                break;
             } catch (InputMismatchException error) {
                 System.out.println(
                         "Number of bombs need to be greater than zero but less than the number of square in the board - please try again:");
                 scanner.nextLine(); // move this past the error
+                continue;
+            } catch (UserErrorException error) {
+                System.out.println(error.getMessage()); // use the built in getter
+                scanner.nextLine(); // move this past the error
             }
         }
 
+        scanner.nextLine();
         this.board = new Board(userChoiceSizing, userBombAmount, this.scanner); // pass the scanner to use it in board)
         this.board.boardLogic();
     }
@@ -116,7 +133,7 @@ public class Game {
             }
 
             if (this.board.getGameState() == GAME_STATE.LOST) {
-                player.getGamesLost();
+                player.incrGamesLost();
             }
         }
 
