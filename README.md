@@ -2,19 +2,17 @@
 
 Welcome to Java Minefield, a classic Minesweeper game powered by Java and played in the command-line interface (CLI).
 
-![Homepage Screenshot](./brief/gameplay.png)
+![Homepage Screenshot](./brief/gameplay.png width="500" height="300")
 
+Video of game play if you don't fancy don't looking
 [![Video of game play](http://img.youtube.com/vi/CY8k5uvTEas/0.jpg)](https://youtu.be/CY8k5uvTEas)
-
-## About
-
-Java Minefield is my first Java project, providing valuable insights into type safety and the advantages of using Java.
 
 ## To play
 
 1. Clone this repo
 2. Navigate into the cloned rep directory on your local machine
 3. Run via `java Main` in the CLI
+4. Enjoy
 * please note you need to have JDK installed on your local machine in order for this game to work
 
 ## Key Features

@@ -145,7 +145,7 @@ public class Board {
         switch (logicBoard[y_coord][x_coord]) {
             case 9: // if a bomb - end game
                 this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
-                System.out.println("You hit a bomb");
+                System.out.println("BOOM! You hit a \uD83D\uDCA3");
                 // how would i update the player's stats if connected board
                 this.gameState = GAME_STATE.LOST;
                 break;
