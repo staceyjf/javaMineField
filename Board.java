@@ -17,6 +17,7 @@ public class Board {
     private int totalSurroundingBombs;
     private int numberOfMovesToWin;
     private Scanner scanner;
+    private Boolean isFlag;
     private GAME_STATE gameState; // controls the game state to update Game
 
     public Board(int boardSize, int totalBombs, Scanner scanner) {
@@ -28,6 +29,7 @@ public class Board {
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
         this.displayBoard = new String[boardSize][boardSize];
         this.gameState = GAME_STATE.IN_PROGRESS;
+        this.isFlag = false;
 
         // initialise board with unplayed squares
         for (int i = 0; i < this.displayBoard.length; i++) {
@@ -69,6 +71,28 @@ public class Board {
     }
 
     public int[] checkCoords() {
+
+        System.out.println("\nDo you want to flag (F) or reveal(R)?");
+
+        // flag logic
+        int user_action = 0; // row
+
+        // keep asking until we break out of it with the break
+        while (true) {
+            String userAction = this.scanner.nextLine();
+            String updatedUserAction = userAction.replaceAll(" ", "").toLowerCase(); // get a consistent input
+
+            if (updatedUserAction.equals("f")) {
+                user_action = 0; // 0 for flag
+                break;
+            } else if (updatedUserAction.equals("r")) {
+                user_action = 1; // 1 for reveal. Doesn't really matter what this is
+                break;
+            } else {
+                System.out.println("Ooops try again - please enter 'F' for flag or 'R' for reveal.");
+            }
+        }
+
         System.out.println("\nEnter your co-ordinates (eg a1):");
 
         // co-ords
@@ -134,12 +158,22 @@ public class Board {
         }
 
         // return validate co-ordiates
-        return new int[] { y_coord, x_coord };
+        return new int[] { y_coord, x_coord, user_action };
     }
 
     public void handleGamePlay(int[] validCoords) {
         int y_coord = validCoords[0];
         int x_coord = validCoords[1];
+        int user_action = validCoords[2];
+
+        // if the user_action is 0 which is flag
+        if (user_action == 0) {
+            this.displayBoard[y_coord][x_coord] = this.displayBoard[y_coord][x_coord]
+                    .equals(SQUARE.FLAG.getDisplayValue()) // if its already a flag
+                            ? SQUARE.UNPLAYED.getDisplayValue() // toggle to unplayed
+                            : SQUARE.FLAG.getDisplayValue(); // mark as a flag
+            return; // exit here so we skip the rest of the logic for reveal
+        }
 
         // check to see if game is lost or square is unplayed
         switch (logicBoard[y_coord][x_coord]) {
@@ -213,7 +247,7 @@ public class Board {
         System.out.println();
         for (int i = 0; i < this.displayBoard.length; i++) {
             // letter column
-            System.out.printf("%4c", (char) (i + 97));
+            System.out.printf("%4c", (char) (i + 'a'));
             for (int j = 0; j < this.displayBoard[i].length; j++) {
                 // squares
                 System.out.printf("%2s", this.displayBoard[i][j]);
