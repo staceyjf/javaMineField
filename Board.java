@@ -4,11 +4,6 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
 
-// ENUM
-// 0 is unplayed / "\uD83C\uDF54"; // hamburger emoji
-// 1 is played / "  "
-// 9 is bomb "U+1F4A3"
-
 public class Board {
     private int[][] logicBoard;
     private String[][] displayBoard;
@@ -17,7 +12,6 @@ public class Board {
     private int totalSurroundingBombs;
     private int numberOfMovesToWin;
     private Scanner scanner;
-    private Boolean isFlag;
     private GAME_STATE gameState; // controls the game state to update Game
 
     public Board(int boardSize, int totalBombs, Scanner scanner) {
@@ -29,9 +23,8 @@ public class Board {
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
         this.displayBoard = new String[boardSize][boardSize];
         this.gameState = GAME_STATE.IN_PROGRESS;
-        this.isFlag = false;
 
-        // initialise board with unplayed squares
+        // initialize board with unplayed squares
         for (int i = 0; i < this.displayBoard.length; i++) {
             for (int j = 0; j < this.displayBoard[i].length; j++) {
                 this.displayBoard[i][j] = SQUARE.UNPLAYED.getDisplayValue();
@@ -142,7 +135,8 @@ public class Board {
 
                 // if played eg 1
                 if (logicBoard[y_coord][x_coord] == 1) {
-                    throw new SquareAlreadyPlayedException("Oops - that square has already been played");
+                    throw new SquareAlreadyPlayedException(
+                            "Oops - that square has already been played. Please try again.");
                 }
 
                 break; // to exit out when co-ords are valid
@@ -161,6 +155,7 @@ public class Board {
         return new int[] { y_coord, x_coord, user_action };
     }
 
+    // this check if its a flag, the game is won, lost or in progress
     public void handleGamePlay(int[] validCoords) {
         int y_coord = validCoords[0];
         int x_coord = validCoords[1];
@@ -183,40 +178,79 @@ public class Board {
                 // how would i update the player's stats if connected board
                 this.gameState = GAME_STATE.LOST;
                 break;
-            case 0: // if unplayed
-                this.logicBoard[y_coord][x_coord] = 1; // updated to play
-                this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
-                this.numberOfMovesToWin--; // reduce the number of moves left
-                this.totalSurroundingBombs = 0; // reset surrounding bombs count to zero
+            case 0: // if unplayed - check if game is won or game must continue
+                cascadeSquares(y_coord, x_coord);
+                // I've already handled case 1 in the while loop in checkCoords
+        }
+    }
 
-                // all the positions to check
-                List<int[]> transformations = Arrays.asList(
-                        new int[] { -1, -1 },
-                        new int[] { -1, 0 },
-                        new int[] { -1, 1 },
-                        new int[] { 0, -1 },
-                        new int[] { 0, 1 },
-                        new int[] { 1, -1 },
-                        new int[] { 1, 0 },
-                        new int[] { 1, 1 });
+    // handle the cascading squares
+    public void cascadeSquares(int y_coord, int x_coord) {
+        this.totalSurroundingBombs = 0; // reset the bomb counter
 
-                // surrounding bombs
-                for (int[] transformation : transformations) {
-                    int newX = x_coord + transformation[1];
-                    int newY = y_coord + transformation[0];
+        // create an exit point for the recursion eg if the square is a bomb (9) or been
+        // played (1) or has a flag eg it will go back to asking for valid coords (game
+        // logic)
+        if (this.logicBoard[y_coord][x_coord] == 9 || this.logicBoard[y_coord][x_coord] == 1
+                || this.displayBoard[y_coord][x_coord].equals(SQUARE.FLAG.getDisplayValue())) {
+            return;
+        }
 
-                    /// ensure co-ords are valid
-                    if (newY >= 0 && newY < logicBoard.length && newX >= 0 && newX < logicBoard[0].length) {
-                        if (this.logicBoard[newY][newX] == 9) {
-                            totalSurroundingBombs++; // increase bomb count for surrounding bombs
-                        }
-                    }
+        // all the positions to check
+        List<int[]> transformations = Arrays.asList(
+                new int[] { -1, -1 },
+                new int[] { -1, 0 },
+                new int[] { -1, 1 },
+                new int[] { 0, -1 },
+                new int[] { 0, 1 },
+                new int[] { 1, -1 },
+                new int[] { 1, 0 },
+                new int[] { 1, 1 });
+
+        // logic to check if adjacent are bombs. If so, exit here and ask for valid
+        // coords
+        for (int[] transformation : transformations) {
+            int newX = x_coord + transformation[1];
+            int newY = y_coord + transformation[0];
+
+            // ensure co-ords are valid
+            if (newY >= 0 && newY < logicBoard.length && newX >= 0 && newX < logicBoard[0].length) {
+                if (this.logicBoard[newY][newX] == 9) {
+                    // if the square is adjacent to a bomb, reveal it and stop the cascade
+                    this.logicBoard[y_coord][x_coord] = 1; // updated to play
+                    this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board
+                                                                                           // to played
+                    this.numberOfMovesToWin--; // reduce the number of moves left
+                    this.totalSurroundingBombs++; // update the bomb count
+                    return;
                 }
+            }
+        }
 
-                // check to see if game is won
-                if (numberOfMovesToWin == 0) {
-                    this.gameState = GAME_STATE.WON;
+        // if the square is not adjacent to any bombs, reveal it and continue the
+        // cascade
+        this.logicBoard[y_coord][x_coord] = 1; // updated to play
+        this.displayBoard[y_coord][x_coord] = SQUARE.PLAYED.getDisplayValue(); // updated the display board with
+        this.numberOfMovesToWin--; // reduce the number of moves left
+
+        // cascade the squares
+        for (int[] transformation : transformations) {
+            int newX = x_coord + transformation[1];
+            int newY = y_coord + transformation[0];
+
+            // ensure co-ords are valid
+            if (newY >= 0 && newY < logicBoard.length && newX >= 0 && newX < logicBoard[0].length) {
+                if (this.logicBoard[newY][newX] == 0) {
+                    cascadeSquares(newY, newX); // if its not played (0), call the function until it reaches
+                                                // the exit clause
                 }
+            }
+        }
+        // check to see if game is won
+        if (numberOfMovesToWin == 0)
+
+        {
+            this.gameState = GAME_STATE.WON;
         }
     }
 
