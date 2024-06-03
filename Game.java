@@ -230,6 +230,19 @@ public class Game {
 
         if (this.board.getGameState() == GAME_STATE.LOST) {
             System.out.println("BOOM! You hit a \uD83D\uDCA3");
+            System.out
+                    .println("     _.-^^---....,,--       \r\n" + //
+                            " _--                  --_  \r\n" + //
+                            "<                        >)\r\n" + //
+                            "|                         | \r\n" + //
+                            " \\._                   _./  \r\n" + //
+                            "    ```--. . , ; .--'''       \r\n" + //
+                            "          | |   |             \r\n" + //
+                            "       .-=||  | |=-.   \r\n" + //
+                            "       `-=#$%&%$#=-'   \r\n" + //
+                            "          | ;  :|     \r\n" + //
+                            " _____.,-#%&$@%#&#~,._____");
+            System.out.println("");
             player.incrGamesLost();
         }
 
@@ -266,21 +279,35 @@ public class Game {
         // number header
         System.out.print("   ");
         for (int i = 1; i <= this.board.getBoardSize(); i++) {
-            if (i < 10) {
-                System.out.print("  " + i); // print the number columns with an extra space for single-digit numbers
-            } else {
-                System.out.print(" " + i); // print the number columns
-            }
+            System.out.printf("%3d ", i); // print the number columns with a fixed width of 3 characters
         }
         System.out.println();
+
+        // Print top border
+        System.out.print("   +");
+        for (int j = 0; j < this.board.getBoardSize(); j++) {
+            System.out.print("---+");
+        }
+        System.out.println();
+
         for (int i = 0; i < this.board.getDisplayBoard().length; i++) {
             // letter column
-            System.out.printf("%4c", (char) (i + 'a'));
+            System.out.printf("%2c |", (char) (i + 'A'));
             for (int j = 0; j < this.board.getDisplayBoard()[i].length; j++) {
                 // squares
-                System.out.printf("%2s", this.board.getDisplayBoard()[i][j]);
+                System.out.printf(" %s |", this.board.getDisplayBoard()[i][j]);
             }
             System.out.println();
+
+            // Print row separator
+            if (i < this.board.getDisplayBoard().length) {
+                System.out.print("   +");
+                for (int j = 0; j < this.board.getBoardSize(); j++) {
+                    System.out.print("---+");
+                }
+                System.out.println();
+            }
         }
     }
+
 };

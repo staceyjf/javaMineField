@@ -1,6 +1,6 @@
 public enum SQUARE {
-    UNPLAYED("⬛"), // unplayed
-    PLAYED("⬜"), // played
+    UNPLAYED("x"), // unplayed
+    PLAYED(" "), // played
     BOMB("💣"), // bombs
     FLAG("⚑"); // flag
 

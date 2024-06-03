@@ -4,16 +4,17 @@ Welcome to Java Minefield, a classic Minesweeper game powered by Java and played
 
 <img src="./brief/gameplay.png" alt="Homepage Screenshot" width="500" height="300">
 
-Video of game play if you don't fancy don't looking
+Video of game play if you don't fancy don't fancying cloning this repo: 
 [![Video of game play](http://img.youtube.com/vi/CY8k5uvTEas/0.jpg)](https://youtu.be/CY8k5uvTEas)
 
-## To play
+## Build Steps
 
-1. Clone this repo
+1. Clone the repo
 2. Navigate into the cloned rep directory on your local machine
 3. Run via `java Main` in the CLI
 4. Enjoy
-* please note you need to have JDK installed on your local machine in order for this game to work
+
+Please note you need to have JDK installed on your local machine in order for this game to work.
 
 ## Key Features
 
@@ -29,6 +30,26 @@ Video of game play if you don't fancy don't looking
 
 1. **Type Safety**: Understanding and leveraging Java's type system effectively.
 2. **Dynamic Bomb Count Updates**: Implementing dynamic updates to surrounding bomb counts using a vector approach.
+
+## Changelog
+
+Date: 03/06/24
+
+Updates:
+
+**Class refinement:**
+
+- Refactored the `Game` and `Board` classes to ensure separation of concerns and better abstraction, facilitating the future introduction of a GUI.
+- Continued work on the `Game` class to ensure abstraction of user input is compatible with both CLI and GUI interfaces.
+
+**Cascading feature:**
+
+- Reworked the cascading logic to correctly display the number of moves to win and the adjacent bomb count.
+
+**Visuals:**
+
+- Introduced end-of-game word art graphics.
+- Modified the board layout to improve visibility of adjacent bomb counts.
 
 ## To-Dos
 
