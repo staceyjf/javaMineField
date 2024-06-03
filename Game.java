@@ -97,8 +97,10 @@ public class Game {
         }
 
         scanner.nextLine();
-        this.board = new Board(userChoiceSizing, userBombAmount, this.scanner); // pass the scanner to use it in board)
-        this.board.boardLogic();
+        this.board = new Board(userChoiceSizing, userBombAmount); // pass the scanner to use it in board)
+        this.board.boardSetUp();
+        this.board.printDisplayBoard();
+        handleGameLogic(); // start game play
     }
 
     // create a new Player instance
@@ -125,16 +127,110 @@ public class Game {
         int menuChoice = scanner.nextInt();
         scanner.nextLine();
         menuLogic(menuChoice);
+    }
 
-        // only check if the board has been created
-        if (this.board != null) {
-            if (this.board.getGameState() == GAME_STATE.WON) {
-                player.incrGamesWon();
+    public void handleGameLogic() {
+        while (this.board.getGameState() == GAME_STATE.IN_PROGRESS) {
+
+            // Flag or reveal
+            System.out.println("\nDo you want to flag (F) or reveal(R)?");
+            int user_action = 0; // row
+            while (true) {
+                String userAction = this.scanner.nextLine();
+                String updatedUserAction = userAction.replaceAll(" ", "").toLowerCase(); // get a consistent input
+                // keep asking until we break out of it with the break
+                if (updatedUserAction.equals("f")) {
+                    user_action = 0; // 0 for flag
+                    break;
+                } else if (updatedUserAction.equals("r")) {
+                    user_action = 1; // 1 for reveal. Doesn't really matter what this is
+                    break;
+                } else {
+                    System.out.println("Ooops try again - please enter 'F' for flag or 'R' for reveal.");
+                }
             }
 
-            if (this.board.getGameState() == GAME_STATE.LOST) {
-                player.incrGamesLost();
+            // Game co-ordinates
+            System.out.println("\nEnter your co-ordinates (eg a1):");
+            // co-ords
+            int y_coord = 0; // row
+            int x_coord = 0; // column
+
+            // check until valid co-ords
+            while (true) {
+                String userCoords = this.scanner.nextLine(); // ask for new input each time
+
+                // remove any whitespace and lower case
+                String updatedCords = userCoords.replaceAll(" ", "").toLowerCase();
+
+                try {
+                    // if empty
+                    if (updatedCords.isEmpty()) {
+                        throw new IllegalArgumentException("Oops - please try again and enter co-ordinates");
+                    }
+
+                    // transform "a1" -> split into y,x
+                    // column = letter -> to int - 1 (inner) -> y coords
+                    // row = int -> -1 for index (outter ) -> x coords
+                    char rowChar = updatedCords.charAt(0); // 'a'
+                    String columnString = updatedCords.substring(1); // '1'
+
+                    // if not right type for y
+                    if (!Character.isLetter(rowChar)) {
+                        throw new IllegalArgumentException(
+                                "Oops - please try again as the y co-ordinate was not a letter");
+                    }
+
+                    // if not the right type for x
+                    try {
+                        Integer.parseInt(columnString); // will throw an exception if it can't convert
+                    } catch (NumberFormatException error) {
+                        throw new IllegalArgumentException(
+                                "Oops - please try again as the x co-ordinate was not a number");
+                    }
+
+                    y_coord = rowChar - 'a'; // subtract "1 the value of a (the unicode value) to get the right index
+                    x_coord = Integer.parseInt(columnString) - 1; // to get the right index
+
+                    // if not inside the board
+                    if (x_coord < 0 || x_coord >= this.board.getBoardSize() || y_coord < 0
+                            || y_coord >= this.board.getBoardSize()) {
+                        throw new IllegalArgumentException(
+                                "Oops - please try again as the co-ordinates where outside of the board range");
+                    }
+
+                    // if played eg 1
+                    if (this.board.getLogicBoard()[y_coord][x_coord] == 1) {
+                        throw new SquareAlreadyPlayedException(
+                                "Oops - that square has already been played. Please try again.");
+                    }
+
+                    break; // to exit out when co-ords are valid
+                } catch (NumberFormatException ex) {
+                    System.out.println("Invalid co-ordinate - please input a co-ord like 'a1'");
+                } catch (StringIndexOutOfBoundsException ex) {
+                    System.out.println("Invalid co-ordinate - please input a co-ord within the board range");
+                } catch (IllegalArgumentException ex) {
+                    System.out.println(ex.getMessage());
+                } catch (SquareAlreadyPlayedException ex) {
+                    System.out.println(ex.getMessage());
+                }
+
             }
+
+            // handleMove
+            this.board.handleMove(y_coord, x_coord, user_action);
+            this.board.printDisplayBoard();
+        }
+
+        // when game state changes, update player stats and end the game
+        if (this.board.getGameState() == GAME_STATE.WON) {
+            player.incrGamesWon();
+        }
+
+        if (this.board.getGameState() == GAME_STATE.LOST) {
+            System.out.println("BOOM! You hit a \uD83D\uDCA3");
+            player.incrGamesLost();
         }
 
         endGame();
@@ -156,5 +252,4 @@ public class Game {
             case EXIT -> exitGame();
         }
     };
-
 };

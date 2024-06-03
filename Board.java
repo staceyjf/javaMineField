@@ -1,6 +1,5 @@
 
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,15 +10,14 @@ public class Board {
     private int totalBombs;
     private int totalSurroundingBombs;
     private int numberOfMovesToWin;
-    private Scanner scanner;
+
     private GAME_STATE gameState; // controls the game state to update Game
 
-    public Board(int boardSize, int totalBombs, Scanner scanner) {
+    public Board(int boardSize, int totalBombs) {
         this.boardSize = boardSize; // user defined
         this.totalBombs = totalBombs; // user defined
         this.totalSurroundingBombs = 0;
         this.numberOfMovesToWin = ((boardSize * boardSize) - totalBombs);
-        this.scanner = scanner;
         this.logicBoard = new int[boardSize][boardSize]; // initialise to zero as default
         this.displayBoard = new String[boardSize][boardSize];
         this.gameState = GAME_STATE.IN_PROGRESS;
@@ -32,7 +30,7 @@ public class Board {
         }
     }
 
-    public void boardLogic() {
+    public void boardSetUp() {
         // set the bombs
         int amountOfBombsSet = 0;
         Random random = new Random();
@@ -50,117 +48,11 @@ public class Board {
             }
         }
 
-        printDisplayBoard(); // prints the board
-
-        // continually ask for new squares until game is either won or lost
-        while (this.gameState == GAME_STATE.IN_PROGRESS) {
-            int[] validCoords = checkCoords();
-            handleGamePlay(validCoords);
-            // print board
-            if (this.gameState != GAME_STATE.LOST) {
-                printDisplayBoard();
-            }
-        }
-    }
-
-    public int[] checkCoords() {
-
-        System.out.println("\nDo you want to flag (F) or reveal(R)?");
-
-        // flag logic
-        int user_action = 0; // row
-
-        // keep asking until we break out of it with the break
-        while (true) {
-            String userAction = this.scanner.nextLine();
-            String updatedUserAction = userAction.replaceAll(" ", "").toLowerCase(); // get a consistent input
-
-            if (updatedUserAction.equals("f")) {
-                user_action = 0; // 0 for flag
-                break;
-            } else if (updatedUserAction.equals("r")) {
-                user_action = 1; // 1 for reveal. Doesn't really matter what this is
-                break;
-            } else {
-                System.out.println("Ooops try again - please enter 'F' for flag or 'R' for reveal.");
-            }
-        }
-
-        System.out.println("\nEnter your co-ordinates (eg a1):");
-
-        // co-ords
-        int y_coord = 0; // row
-        int x_coord = 0; // column
-
-        // check until valid co-ords
-        while (true) {
-            String userCoords = this.scanner.nextLine(); // ask for new input each time
-
-            // remove any whitespace and lower case
-            String updatedCords = userCoords.replaceAll(" ", "").toLowerCase();
-
-            try {
-                // if empty
-                if (updatedCords.isEmpty()) {
-                    throw new IllegalArgumentException("Oops - please try again and enter co-ordinates");
-                }
-
-                // transform "a1" -> split into y,x
-                // column = letter -> to int - 1 (inner) -> y coords
-                // row = int -> -1 for index (outter ) -> x coords
-                char rowChar = updatedCords.charAt(0); // 'a'
-                String columnString = updatedCords.substring(1); // '1'
-
-                // if not right type for y
-                if (!Character.isLetter(rowChar)) {
-                    throw new IllegalArgumentException("Oops - please try again as the y co-ordinate was not a letter");
-                }
-
-                // if not the right type for x
-                try {
-                    Integer.parseInt(columnString); // will throw an exception if it can't convert
-                } catch (NumberFormatException error) {
-                    throw new IllegalArgumentException("Oops - please try again as the x co-ordinate was not a number");
-                }
-
-                y_coord = rowChar - 'a'; // subtract "1 the value of a (the unicode value) to get the right index
-                x_coord = Integer.parseInt(columnString) - 1; // to get the right index
-
-                // if not inside the board
-                if (x_coord < 0 || x_coord >= boardSize || y_coord < 0
-                        || y_coord >= boardSize) {
-                    throw new IllegalArgumentException(
-                            "Oops - please try again as the co-ordinates where outside of the board range");
-                }
-
-                // if played eg 1
-                if (logicBoard[y_coord][x_coord] == 1) {
-                    throw new SquareAlreadyPlayedException(
-                            "Oops - that square has already been played. Please try again.");
-                }
-
-                break; // to exit out when co-ords are valid
-            } catch (NumberFormatException ex) {
-                System.out.println("Invalid co-ordinate - please input a co-ord like 'a1'");
-            } catch (StringIndexOutOfBoundsException ex) {
-                System.out.println("Invalid co-ordinate - please input a co-ord within the board range");
-            } catch (IllegalArgumentException ex) {
-                System.out.println(ex.getMessage());
-            } catch (SquareAlreadyPlayedException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-
-        // return validate co-ordiates
-        return new int[] { y_coord, x_coord, user_action };
+        // TODO: calculate the bombs here ahead of time
     }
 
     // this check if its a flag, the game is won, lost or in progress
-    public void handleGamePlay(int[] validCoords) {
-        int y_coord = validCoords[0];
-        int x_coord = validCoords[1];
-        int user_action = validCoords[2];
-
+    public void handleMove(int y_coord, int x_coord, int user_action) {
         // if the user_action is 0 which is flag
         if (user_action == 0) {
             this.displayBoard[y_coord][x_coord] = this.displayBoard[y_coord][x_coord]
@@ -174,8 +66,6 @@ public class Board {
         switch (logicBoard[y_coord][x_coord]) {
             case 9: // if a bomb - end game
                 this.displayBoard[y_coord][x_coord] = SQUARE.BOMB.getDisplayValue(); // updated the display board
-                System.out.println("BOOM! You hit a \uD83D\uDCA3");
-                // how would i update the player's stats if connected board
                 this.gameState = GAME_STATE.LOST;
                 break;
             case 0: // if unplayed - check if game is won or game must continue
@@ -254,9 +144,17 @@ public class Board {
         }
     }
 
-    // setter to update game
+    // getters
     public GAME_STATE getGameState() {
         return this.gameState;
+    }
+
+    public int getBoardSize() {
+        return boardSize;
+    }
+
+    public int[][] getLogicBoard() {
+        return logicBoard;
     }
 
     public void printDisplayBoard() {
