@@ -24,7 +24,7 @@ public class Game {
 
         // if they want another game (might have to change this)
         if (userChoice.toLowerCase().equals("y")) {
-            handleMenuLogic();
+            createNewBoard();
         } else {
             exitGame();
         }
@@ -99,7 +99,7 @@ public class Game {
         scanner.nextLine();
         this.board = new Board(userChoiceSizing, userBombAmount); // pass the scanner to use it in board)
         this.board.boardSetUp();
-        this.board.printDisplayBoard();
+        printDisplayBoard();
         handleGameLogic(); // start game play
     }
 
@@ -199,8 +199,8 @@ public class Game {
                                 "Oops - please try again as the co-ordinates where outside of the board range");
                     }
 
-                    // if played eg 1
-                    if (this.board.getLogicBoard()[y_coord][x_coord] == 1) {
+                    // if played eg 10
+                    if (this.board.getLogicBoard()[y_coord][x_coord] == 10) {
                         throw new SquareAlreadyPlayedException(
                                 "Oops - that square has already been played. Please try again.");
                     }
@@ -220,7 +220,7 @@ public class Game {
 
             // handleMove
             this.board.handleMove(y_coord, x_coord, user_action);
-            this.board.printDisplayBoard();
+            printDisplayBoard();
         }
 
         // when game state changes, update player stats and end the game
@@ -252,4 +252,35 @@ public class Game {
             case EXIT -> exitGame();
         }
     };
+
+    public void printDisplayBoard() {
+        // print welcome message and board
+        System.out.println();
+        System.out.println("================== GAME STATS ================");
+        System.out.printf("Moves to win: %d", this.board.getNumberOfMovesToWin());
+        System.out.println();
+        System.out.println();
+        System.out.println("================== MY BOARD ==================\n");
+
+        // board
+        // number header
+        System.out.print("   ");
+        for (int i = 1; i <= this.board.getBoardSize(); i++) {
+            if (i < 10) {
+                System.out.print("  " + i); // print the number columns with an extra space for single-digit numbers
+            } else {
+                System.out.print(" " + i); // print the number columns
+            }
+        }
+        System.out.println();
+        for (int i = 0; i < this.board.getDisplayBoard().length; i++) {
+            // letter column
+            System.out.printf("%4c", (char) (i + 'a'));
+            for (int j = 0; j < this.board.getDisplayBoard()[i].length; j++) {
+                // squares
+                System.out.printf("%2s", this.board.getDisplayBoard()[i][j]);
+            }
+            System.out.println();
+        }
+    }
 };
