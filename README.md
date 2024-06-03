@@ -5,7 +5,7 @@ Welcome to Java Minefield, a classic Minesweeper game powered by Java and played
 <img src="./brief/gameplay.png" alt="Homepage Screenshot" width="500" height="300">
 
 Video of game play if you don't fancy don't fancying cloning this repo: 
-[![Video of game play](http://img.youtube.com/vi/CY8k5uvTEas/0.jpg)](https://youtu.be/CY8k5uvTEas)
+[![Video of game play](https://youtu.be/UBUAPNXMFS8)](https://youtu.be/UBUAPNXMFS8)
 
 ## Build Steps
 
