@@ -2,10 +2,9 @@
 
 Welcome to Java Minefield, a classic Minesweeper game powered by Java and played in the command-line interface (CLI).
 
-<img src="./brief/gameplay.png" alt="Homepage Screenshot" width="500" height="300">
-
-Video of game play if you don't fancy don't fancying cloning this repo: 
-[![Video of game play](https://youtu.be/UBUAPNXMFS8)](https://youtu.be/UBUAPNXMFS8)
+<div align="center">
+  <img src="./brief/javafield.gif" alt="Video of game play" >
+</div>
 
 ## Build Steps
 
@@ -58,9 +57,9 @@ Updates:
 
 ## Screenshots
 
-| Menu Page                                 | Product Page                           |
-| ----------------------------------------- | -------------------------------------- |
-| <img src="./brief/menu.png" width="400" height="200">  | <img src="./brief/play.png" width="400"  height="200"> |
+| Menu Page                                             | Product Page                                           |
+| ----------------------------------------------------- | ------------------------------------------------------ |
+| <img src="./brief/menu.png" width="400" height="200"> | <img src="./brief/play.png" width="400"  height="200"> |
 
 ## Technologies Used
 
